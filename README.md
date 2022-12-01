@@ -2,8 +2,7 @@
 This guide will provide you with a step-by-step of all the commands that will be needed during the hands-on portion of the workshop. If you have questions, feel free to ask your group moderator.
 
 
-## Exercise 1 - Writing a Detection
-Using the rule function and other pre-existing helper functions, creating a detection is extremely efficient in Panther. For this exercise, you will use the Panther console to create your first detection. 
+## Exercise 1 - Tuning an existing out-of-the-box detection
 
 **Terms we'll reference**
 - [All Available Rule Functions](https://github.com/panther-labs/panther-analysis/blob/master/templates/example_rule.py)
@@ -12,11 +11,11 @@ Using the rule function and other pre-existing helper functions, creating a dete
 - [What is Deep_Get?](https://docs.panther.com/writing-detections/globals#deep_get)
 
 **Exercise 1 Steps**
-1. In the Panther Console - Navigate to Build > Detections > Create New
+1. In the Panther Console - Navigate to Build > Packs > Core AWS Packs
 2. Select "Rule" and give it a unique name "Brandon's Failed Login Detection" (Use your own name or initials)
-3. Select the log source "Okta System Log" and set Severity to "Medium"
+3. Select the log source "AWS.CloudTrail" and set Severity to "Medium"
 4. Select Functions and Tests in the tab
-5. Create a Unit Test and copy and paste the sample event from Okta below. We will use this to create our detection. 
+5. Create a Unit Test and copy and paste the sample event from Cloudtrail below. We will use this to create our detection. 
 6. Import deep_get function from the panther_base_helpers library ```from panther_base_helpers import deep_get```
 7. Return the event for a login ```return event.get("eventType") == 'user.session.start'```
 8. Return the event for a failed login result using the deep_get function ```deep_get(event, 'outcome', 'result') == "FAILURE"```
@@ -26,37 +25,48 @@ Using the rule function and other pre-existing helper functions, creating a dete
 from panther_base_helpers import deep_get
 
 def rule(event):
-    return event.get("eventType") == 'user.session.start' and deep_get(event, 'outcome', 'result') == "FAILURE"
+    return deep_get(event, "responseElements", "ConsoleLogin") == "Failure"
 
 ```
 
-**Sample Okta Event Failed Login**
+**CloudTrail Log - Failed Login Attempt**
 ```
 {
-	"actor": {
-		"alternateId": "admin",
-		"displayName": "unknown",
-		"id": "unknown",
-		"type": "User"
+	"additionalEventData": {
+		"LoginTo": "https://console.aws.amazon.com/console/",
+		"MFAUsed": "No",
+		"MobileVersion": "No"
 	},
-	"client": {
-		"ipAddress": "111.111.111.111"
-	},
-	"eventType": "user.session.start",
-	"outcome": {
-		"reason": "VERIFICATION_ERROR",
-		"result": "FAILURE"
-	},
+	"awsRegion": "us-east-1",
+	"eventID": "1",
+	"eventName": "ConsoleLogin",
+	"eventSource": "signin.amazonaws.com",
+	"eventTime": "2019-01-01T00:00:00Z",
+	"eventType": "AwsConsoleSignIn",
+	"eventVersion": "1.05",
 	"p_event_time": "2021-06-04 09:59:53.650807",
-	"p_log_type": "Okta.SystemLog",
-	"p_parse_time": "2021-06-04 10:02:33.650807"
+	"p_log_type": "AWS.CloudTrail",
+	"p_parse_time": "2021-06-04 10:02:33.650807",
+	"recipientAccountId": "123456789012",
+	"requestParameters": null,
+	"responseElements": {
+		"ConsoleLogin": "Failure"
+	},
+	"sourceIPAddress": "111.111.111.111",
+	"userAgent": "Mozilla",
+	"userIdentity": {
+		"accountId": "123456789012",
+		"arn": "arn:aws:iam::123456789012:user/tester",
+		"principalId": "1111",
+		"type": "IAMUser",
+		"userName": "tester"
+	}
 }
 ```
 
 
 
-## Exercise 2 - Apply an out-of-the-box detection and modify it for your environment
-By utilzing a pre-packaged detection, we can easily modify an existing detection to tune to our environment. By using the python functions that Panther provides, code templates are easily available. 
+## Exercise 2 - 
 
 **Terms we'll reference**
 - [What are Packs?](https://docs.panther.com/writing-detections/detection-packs)
