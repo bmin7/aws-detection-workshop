@@ -1,4 +1,4 @@
-# Welcome to the Detections Workshop
+# Welcome to the Detection-as-Code (DAC) Workshop
 This guide will provide you with a step-by-step of all the commands that will be needed during the hands-on portion of the workshop. If you have questions, feel free to ask your group moderator.
 
 
