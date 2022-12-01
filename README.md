@@ -2,24 +2,21 @@
 This guide will provide you with a step-by-step of all the commands that will be needed during the hands-on portion of the workshop. If you have questions, feel free to ask your group moderator.
 
 
-## Exercise 1 - Tuning an existing out-of-the-box detection
+## Lesson 1 - Tuning an existing out-of-the-box detection
 
 **Terms we'll reference**
 - [All Available Rule Functions](https://github.com/panther-labs/panther-analysis/blob/master/templates/example_rule.py)
-- [What is a rule?](https://docs.panther.com/writing-detections/rules)
-- [What are Helpers?](https://docs.panther.com/writing-detections/globals?q=helpers)
 - [What is Deep_Get?](https://docs.panther.com/writing-detections/globals#deep_get)
 
-**Exercise 1 Steps**
+**Lesson 1 Steps**
 1. In the Panther Console - Navigate to Build > Packs > Core AWS Packs
 2. Select "Rule" and give it a unique name "Brandon's Failed Login Detection" (Use your own name or initials)
 3. Select the log source "AWS.CloudTrail" and set Severity to "Medium"
 4. Select Functions and Tests in the tab
 5. Create a Unit Test and copy and paste the sample event from Cloudtrail below. We will use this to create our detection. 
 6. Import deep_get function from the panther_base_helpers library ```from panther_base_helpers import deep_get```
-7. Return the event for a login ```return event.get("eventType") == 'user.session.start'```
-8. Return the event for a failed login result using the deep_get function ```deep_get(event, 'outcome', 'result') == "FAILURE"```
-9. Final detection should look something like this. 
+7. Return the event for a login ```return deep_get(event, "responseElements", "ConsoleLogin") == "Failure"```
+8. Final detection should look something like below:
 
 ```
 from panther_base_helpers import deep_get
