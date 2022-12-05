@@ -2,7 +2,7 @@
 This guide will provide you with a step-by-step of all the commands that will be needed during the hands-on portion of the workshop. If you have questions, feel free to ask your group moderator.
 
 
-## Lesson 1 - Tuning an existing out-of-the-box detection
+## Lesson 1 - Writing a Detection for CloudTrail IAM Logs
 
 **Terms we'll reference**
 - [All Available Rule Functions](https://github.com/panther-labs/panther-analysis/blob/master/templates/example_rule.py)
