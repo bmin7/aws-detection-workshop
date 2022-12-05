@@ -1,12 +1,15 @@
 # Welcome to the Detection-as-Code (DAC) Workshop
 This guide will provide you with a step-by-step of all the commands that will be needed during the hands-on portion of the workshop. If you have questions, feel free to ask your group moderator.
 
-
-## Lesson 1 - Writing a Detection for CloudTrail IAM Logs
-
-**Terms we'll reference**
+**Helpful Links 
 - [All Available Rule Functions](https://github.com/panther-labs/panther-analysis/blob/master/templates/example_rule.py)
 - [What is Deep_Get?](https://docs.panther.com/writing-detections/globals#deep_get)
+- [What are Packs?](https://docs.panther.com/writing-detections/detection-packs)
+- [Panther Analysis Tool](https://docs.panther.com/panther-developer-workflows/panther-analysis-tool#overview)
+- [API Key](https://docs.panther.com/panther-developer-workflows/api#how-to-use-panthers-api)
+
+
+## Lesson 1 - Writing a Detection for CloudTrail IAM Logs
 
 **Lesson 1 Steps**
 1. In the Panther Console - Navigate to Build > Packs > Core AWS Packs
@@ -64,9 +67,6 @@ def rule(event):
 
 
 ## Exercise 2 - 
-
-**Terms we'll reference**
-- [What are Packs?](https://docs.panther.com/writing-detections/detection-packs)
 
 
 **Exercise 2 Steps**
@@ -131,8 +131,7 @@ Use the Panther Analysis Tool (PAT) with local developer tools to write and test
 
 
 **Terms we'll reference**
-- [Panther Analysis Tool](https://docs.panther.com/panther-developer-workflows/panther-analysis-tool#overview)
-- [API Key](https://docs.panther.com/panther-developer-workflows/api#how-to-use-panthers-api)
+
 
 
 **Exercise 3 Steps**
