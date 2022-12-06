@@ -7,6 +7,8 @@ This guide will provide you with a step-by-step of all the commands that will be
 - [What are Packs?](https://docs.panther.com/writing-detections/detection-packs)
 - [Panther Analysis Tool](https://docs.panther.com/panther-developer-workflows/panther-analysis-tool#overview)
 - [API Key](https://docs.panther.com/panther-developer-workflows/api#how-to-use-panthers-api)
+- [Lookup Tables](https://docs.panther.com/enrichment/lookup-tables)
+
 
 
 ## Lesson 1 - Writing a Detection for CloudTrail IAM Logs
@@ -66,108 +68,83 @@ def rule(event):
 
 
 
-## Exercise 2 - 
+## Lesson 2 - Tuning an pre-existing detection
 
 
 **Exercise 2 Steps**
-1. In the Panther Console - Navigate to Build > Packs > Okta Pack
-2. Select the Okta.APIKey.Created rule
-3. Duplicate your tab 
+1. In the Panther Console - Navigate to Build > Packs > AWS Core Pack
+2. Select the AWS GuardDuty High Severity Finding
+3. Duplicate your tab
 4. Navigate to Build > Detections > Create New and Create a new rule (Do not clone packed rule)
-5. Name the detection a unique name with your initials - Sample "Okta API Key Created - Brandon"
-6. Copy and Paste the code from Okta.APIKey.Created Packed Rule
-7. Grab the severity function from the templates page or below 
-```def severity(event):
+5. Name the detection a unique name with your initials - Sample "AWS GuardDuty High Severity Finding - Brandon"
+6. Copy and Paste the code from the original Packed Rule
+7. Grab the severity function below:
+```
+def severity(event):
     if event.get("field") == "value":
         return "INFO"
     return "HIGH"
 ```
-8. Add the severity function into your detection. Anywhere under the rule function is fine. 
-9. Copy over the test event with the sample log event from Okta Sample Data Below
+8. Add the severity function anywhere under the rule function
+9. Copy over the test event with the sample log event from AWS GuardDuty Log Below
 10. Modify the severity function to return a "Low" event when the user is your own email or otherwise return a "High" event (Hint - you will have to use deep_get for this)
 11. Test your changes using the unit test
 12. Save Changes
 
 
-**Okta API Key Created Log Event**
+**AWS GuardDuty Sample Log**
 ```
 {
-	"debugContext": {},
-	"published": "2021-01-08 21:28:34.875",
-	"eventType": "system.api_token.create",
-	"version": "0",
-	"legacyEventType": "api.token.create",
-	"outcome": {
-		"result": "SUCCESS"
-	},
-	"request": {},
-	"uuid": "2a992f80-d1ad-4f62-900e-8c68bb72a21b",
-	"severity": "INFO",
-	"displayMessage": "Create API token",
-	"actor": {
-		"alternateId": "user@example.com",
-		"displayName": "Test User",
-		"id": "00u3q14ei6KUOm4Xi2p4",
-		"type": "User"
-	},
-	"target": [
-		{
-			"id": "00Tpki36zlWjhjQ1u2p4",
-			"type": "Token",
-			"alternateId": "unknown",
-			"displayName": "test_key",
-			"details": null
+"accountId": "123456789012",
+"arn": "arn:aws:guardduty:us-west-2:123456789012:detector/111111bbbbbbbbbb5555555551111111/finding/90b82273685661b9318f078d0851fe9a",
+"createdAt": "2020-02-14T18:12:22.316Z",
+"description": "Principal AssumedRole:IAMRole attempted to add a highly permissive policy to themselves.",
+"id": "eeb88ab56556eb7771b266670dddee5a",
+"partition": "aws",
+"region": "us-east-1",
+"schemaVersion": "2.0",
+"service": {
+	"action": {
+		"actionType": "AWS_API_CALL",
+		"awsApiCallAction": {
+			"affectedResources": {
+				"AWS::IAM::Role": "arn:aws:iam::123456789012:role/IAMRole"
+			},
+			"api": "PutRolePolicy",
+			"callerType": "Domain",
+			"domainDetails": {
+				"domain": "cloudformation.amazonaws.com"
+			},
+			"serviceName": "iam.amazonaws.com"
 		}
-	]
+	},
+	"additionalInfo": {},
+	"archived": false,
+	"count": 1,
+	"detectorId": "111111bbbbbbbbbb5555555551111111",
+	"eventFirstSeen": "2020-02-14T17:59:17Z",
+	"eventLastSeen": "2020-02-14T17:59:17Z",
+	"evidence": null,
+	"resourceRole": "TARGET",
+	"serviceName": "guardduty"
+},
+"severity": 8,
+"title": "Principal AssumedRole:IAMRole attempted to add a policy to themselves that is highly permissive.",
+"type": "PrivilegeEscalation:IAMUser/AdministrativePermissions",
+"updatedAt": "2020-02-14T18:12:22.316Z"
 }
 ```
 
 
-
-
-
-## Exercise 3 - Use Local Developer Centric Workflows when writing detections
-Use the Panther Analysis Tool (PAT) with local developer tools to write and test new detections. 
-
-
-**Terms we'll reference**
+## Exercise 3 - Enrich a Detection with GreyNoise
+Write a detection while using the GreyNoise helper to apply threat intelligence directly into a detection. For this example, we will use a brute force detection with the sample data from Okta below. 
 
 
 
 **Exercise 3 Steps**
-1. Install Prerequisites on local Machine (Pip, Python3, Git)
-2. Install Panther Analysis Tool 
-```pip install panther_analysis_tool```
-3. Verify proper version (for those of you that have it already, you don't have to update your version)
-```panther_analysis_tool --version```
-4. Fork off Panther Analysis Tool to local 
-```git clone https://github.com/panther-labs/panther-analysis.git```
-5. Create API Token in Panther Console - Select the gear on the top right > API Tokens > Create New Token
-6. Check permissions for Read Panther Settings Info, Bulk Upload, Manage Policies, Manage Rules, Manage Schedule Queries, View Log Sources, Manage Log Sources
-7. Use Check-Connection to verify API setup is successful (This is only on Panther Analysis Tool 0.15.1 and up)
-```panther_analysis_tool check-connection --api-host DOMAIN --api-token TOKEN```
-7. Create new directory and copy a .py and .yml file
-8. Modify .py file and .yml file
-9. Test the rule
-```panther_analysis_tool test --path <path to rule directory>```
-10. Once verified, upload the rule
-```panther_analysis_tool upload --path <path to rule> --api-host DOMAIN --api-token TOKEN```
-11. Check Panther Console for changes
-
-
-
-## Exercise 4 - Enrich a Detection with GreyNoise
-Write a detection while using the GreyNoise helper to apply threat intelligence directly into a detection. For this example, we will use a brute force detection with the sample data from Okta below. 
-
-**Terms We Reference**
-- [p_enrichment](https://docs.panther.com/enrichment/lookup-tables#write-a-detection-using-lookup-table-data)
-- [GreyNoise](https://docs.panther.com/enrichment/greynoise)
-- [Lookup Tables](https://docs.panther.com/enrichment/lookup-tables)
-
-**Exercise 4 Steps**
 1. Create a new detection in the Panther Console Build > Detections > Create New
 2. Name the detection with your initials (Demo GreyNoise Detection Brandon)
-3. Select the Okta System Log Type and set a Medium Severity
+3. Select the AWS CloudTrail Brute Force Attempt and set a Medium Severity
 4. Select Functions & Tests to begin writing the detection
 5. Copy and Paste the Event Log below into a new unit test. You'll use this information to write your detection. 
 6. Import the deep_get function and the GetGreyNoiseObject function 
@@ -203,35 +180,47 @@ def severity(event):
 11. Test your detection and modify as needed
 
 
-**Sample Okta Event Data for Brute Force Detection**
+**Sample AWS.CloudTrail Event Data for Brute Force Detection**
 ```
 {
-	"actor": {
-		"alternateId": "admin",
-		"displayName": "unknown",
-		"id": "unknown",
-		"type": "User"
+	"additionalEventData": {
+		"LoginTo": "https://console.aws.amazon.com/console/",
+		"MFAUsed": "No",
+		"MobileVersion": "No"
 	},
-	"client": {
-		"ipAddress": "111.111.111.111"
-	},
-	"eventType": "user.session.start",
-	"outcome": {
-		"reason": "VERIFICATION_ERROR",
-		"result": "FAILURE"
-	},
+	"awsRegion": "us-east-1",
+	"eventID": "1",
+	"eventName": "ConsoleLogin",
+	"eventSource": "signin.amazonaws.com",
+	"eventTime": "2019-01-01T00:00:00Z",
+	"eventType": "AwsConsoleSignIn",
+	"eventVersion": "1.05",
+	"p_event_time": "2021-06-04 09:59:53.650807",
+	"p_log_type": "AWS.CloudTrail",
+	"p_parse_time": "2021-06-04 10:02:33.650807",
 	"p_enrichment": {
 		"greynoise_noise_basic": {
-			"client.ipAddress": {
-				"actor": "EviLCorp",
-				"classification": "benign",
-				"ip": "1.2.3.4"
+				"client.ipAddress": {
+					"actor": "EviLCorp",
+					"classification": "benign",
+					"ip": "1.2.3.4"
 			}
-		}
+		}	
 	},
-	"p_event_time": "2021-06-04 09:59:53.650807",
-	"p_log_type": "Okta.SystemLog",
-	"p_parse_time": "2021-06-04 10:02:33.650807"
+	"recipientAccountId": "123456789012",
+	"requestParameters": null,
+	"responseElements": {
+		"ConsoleLogin": "Failure"
+	},
+	"sourceIPAddress": "111.111.111.111",
+	"userAgent": "Mozilla",
+	"userIdentity": {
+		"accountId": "123456789012",
+		"arn": "arn:aws:iam::123456789012:user/tester",
+		"principalId": "1111",
+		"type": "IAMUser",
+		"userName": "tester"
+	}
 }
 ```
 
@@ -248,58 +237,13 @@ This section applies everything we've talked about in the above sections. Use ea
 5. Write a Python Rule 
 6. Test and Verify
 
-**Resources that will help**
-- [Documentation](https://docs.panther.com/)
-- [Common Helper Functions](https://docs.panther.com/writing-detections/globals#common-helpers)
-
-
-**Rule 1 - Github New Repository Created**
-```
-{
-	"repo": "my-org/my-repo",
-	"actor": "cat",
-	"action": "repo.create",
-	"created_at": 1621305118553,
-	"org": "my-org",
-	"p_log_type": "GitHub.Audit"
-}
-```
-
-- Prompt 1 - Write a detection that fires an alert when a new Github Repository is created by a user 
-- Prompt 2 - Create a description and runbook and add it into the alert
+**Rule - AWS CloudTrail - Root Password Change**
+- Prompt 1 - Write a detection that triggers an alert when a password is updated 
+- Prompt 2 - Add on to the detection to create a check if a "root" password is updated 
+- Prompt 3 - 
 
 
 
-
-
-**Rule 2 - Box Untrusted Device Access**
-```
-{
-	"created_by": {
-		"id": "12345678",
-		"type": "user",
-		"login": "cat@example",
-		"name": "Bob Cat"
-	},
-	"event_type": "DEVICE_TRUST_CHECK_FAILED",
-	"source": {
-		"login": "lukeskywalker@starwars.com",
-		"id": "12345678",
-		"type": "user"
-	},
-	"type": "event",
-	"additional_details": "{\"key\": \"value\"}"
-}
-```
-
-
-
-- Prompt 1 - Write a detection that fires an alert when a user device trust check does not pass
-- Prompt 2 - Fire an alert with Info severity when the login user is luke@starwars.com and has a Critical severity alert when the user is vadar@starwars.com. For all other alerts, severity should be Low
-
-
-
-**Rule 3 - AWS CloudTrail - Root Password Change**
 ```
 {
 	"recipientAccountId": "123456789012",
@@ -327,9 +271,3 @@ This section applies everything we've talked about in the above sections. Use ea
 	"eventTime": "2019-01-01T00:00:00Z"
 }
 ```
-
-
-- Prompt 1 - Write a detection that fires off an alert when there is an updated password on a root account 
-- Prompt 2 - Add the AWS account ID into the Alert Title 
-
-
