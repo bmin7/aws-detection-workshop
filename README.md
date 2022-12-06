@@ -240,7 +240,7 @@ This section applies everything we've talked about in the above sections. Use ea
 **Rule - AWS CloudTrail - Root Password Change**
 - Prompt 1 - Write a detection that triggers an alert when a password is updated 
 - Prompt 2 - Add on to the detection to create a check if a "root" password is updated 
-- Prompt 3 - 
+- Prompt 3 - Trigger an "INFO" level alert if the AWS region is "us-east-1 or us-east-2" otherwise trigger a "HIGH" level alert. 
 
 
 
