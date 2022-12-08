@@ -1,7 +1,7 @@
 # Welcome to the Detection-as-Code (DAC) Workshop
 This guide will provide you with a step-by-step of all the commands that will be needed during the hands-on portion of the workshop. If you have questions, feel free to ask your group moderator.
 
-**Helpful Links 
+**Helpful Links**
 - [All Available Rule Functions](https://github.com/panther-labs/panther-analysis/blob/master/templates/example_rule.py)
 - [What is Deep_Get?](https://docs.panther.com/writing-detections/globals#deep_get)
 - [What are Packs?](https://docs.panther.com/writing-detections/detection-packs)
