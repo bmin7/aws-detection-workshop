@@ -6,7 +6,6 @@ This guide will provide you with a step-by-step of all the commands that will be
 - [What is Deep_Get?](https://docs.panther.com/writing-detections/globals#deep_get)
 - [What are Packs?](https://docs.panther.com/writing-detections/detection-packs)
 - [Panther Analysis Tool](https://docs.panther.com/panther-developer-workflows/panther-analysis-tool#overview)
-- [API Key](https://docs.panther.com/panther-developer-workflows/api#how-to-use-panthers-api)
 - [Lookup Tables](https://docs.panther.com/enrichment/lookup-tables)
 
 
