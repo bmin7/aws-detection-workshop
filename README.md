@@ -136,12 +136,12 @@ def severity(event):
 ```
 
 
-## Exercise 3 - Enrich a Detection with GreyNoise
+## Lesson 3 - Enrich a Detection with GreyNoise
 Write a detection while using the GreyNoise helper to apply threat intelligence directly into a detection. For this example, we will use a brute force detection with the sample data from Okta below. 
 
 
 
-**Exercise 3 Steps**
+**Lesson 3 Steps**
 1. Create a new detection in the Panther Console Build > Detections > Create New
 2. Name the detection with your initials (Demo GreyNoise Detection Brandon)
 3. Select the AWS CloudTrail Brute Force Attempt and set a Medium Severity
