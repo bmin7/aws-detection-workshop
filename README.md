@@ -13,25 +13,17 @@ This guide will provide you with a step-by-step of all the commands that will be
 
 ## Lesson 1 - Writing a Detection for CloudTrail IAM Logs
 
-**Lesson 1 Steps**
-1. In the Panther Console - Navigate to Build > Packs > Core AWS Packs
-2. Select "Rule" and give it a unique name "Brandon's Failed Login Detection" (Use your own name or initials)
-3. Select the log source "AWS.CloudTrail" and set Severity to "Medium"
-4. Select Functions and Tests in the tab
-5. Create a Unit Test and copy and paste the sample event from Cloudtrail below. We will use this to create our detection. 
-6. Import deep_get function from the panther_base_helpers library ```from panther_base_helpers import deep_get```
-7. Return the event for a login ```return deep_get(event, "responseElements", "ConsoleLogin") == "Failure"```
-8. Final detection should look something like below:
+**Part 1 - Prepare Detection Writing**
+1. In the Panther Console - Navigate to Build > Detections > Create New
+2. Give it a unique name "Brandon's Failed Login IAM Detection" (Use your own name or initials)
+3. Set Severity to "Medium" and Log Types "AWS.CloudTrail"
 
-```
-from panther_base_helpers import deep_get
+**Part 2 - Create Unit Test**
+1. Select "Functions and Tests" in the tab below
+2. Scroll down and select the "Create Test" button
+3. Delete the brackets populated. Copy and paste the sample event below into your console
 
-def rule(event):
-    return deep_get(event, "responseElements", "ConsoleLogin") == "Failure"
-
-```
-
-**CloudTrail Log - Failed Login Attempt**
+**CloudTrail IAM Sample Log**
 ```
 {
 	"additionalEventData": {
@@ -64,6 +56,18 @@ def rule(event):
 		"userName": "tester"
 	}
 }
+```
+**Part 3 - Writing your detection code**
+
+1. Import deep_get function from the panther_base_helpers library ```from panther_base_helpers import deep_get```
+2. Return the event for a login ```return deep_get(event, "responseElements", "ConsoleLogin") == "Failure"```
+3. Final detection should look something like below:
+
+```
+from panther_base_helpers import deep_get
+
+def rule(event):
+    return deep_get(event, "responseElements", "ConsoleLogin") == "Failure"
 ```
 
 
