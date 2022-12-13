@@ -60,43 +60,28 @@ This guide will provide you with a step-by-step of all the commands that will be
 **Part 3 - Writing your detection code**
 
 1. Import deep_get function from the panther_base_helpers library ```from panther_base_helpers import deep_get```
-2. Return the event for a login ```return deep_get(event, "responseElements", "ConsoleLogin") == "Failure"```
-3. Final detection should look something like below:
-
-```
-from panther_base_helpers import deep_get
-
-def rule(event):
-    return deep_get(event, "responseElements", "ConsoleLogin") == "Failure"
-```
+2. All rules require a "rule" function that is a boolean to trigger an alert - True fires and alert 
+3. Create a rule function with ```def rule(event)```
+4. To write the rule, identify the event attributes that associate with a failed login. This should be "eventName" and "ConsoleLogin"
+5. Using event.get and deep_get to grab attributes from the event log, write a return statement that is TRUE when a console login attempt fails
 
 
 
-## Lesson 2 - Tuning an pre-existing detection
+## Lesson 2 - Tune a Panther Managed Detection
 
 
-**Exercise 2 Steps**
-1. In the Panther Console - Navigate to Build > Packs > AWS Core Pack
+**Part 1 - Clone a Managed Detection**
+1. In the Panther Console - Navigate to Build > Packs > Panther Core AWS Pack
 2. Select the AWS GuardDuty High Severity Finding
-3. Duplicate your tab
-4. Navigate to Build > Detections > Create New and Create a new rule (Do not clone packed rule)
-5. Name the detection a unique name with your initials - Sample "AWS GuardDuty High Severity Finding - Brandon"
-6. Copy and Paste the code from the original Packed Rule
-7. Grab the severity function below:
-```
-def severity(event):
-    if event.get("field") == "value":
-        return "INFO"
-    return "HIGH"
-```
-8. Add the severity function anywhere under the rule function
-9. Copy over the test event with the sample log event from AWS GuardDuty Log Below
-10. Modify the severity function to return a "Low" event when the user is your own email or otherwise return a "High" event (Hint - you will have to use deep_get for this)
-11. Test your changes using the unit test
-12. Save Changes
+3. Select Clone & Edit on the Top Right | IF you're using a shared dev instance, please copy & paste detection to a new one. Do NOT clone & edit to avoid merge conflicts
 
+**Part 2 - Prepare Unit Test
 
-**AWS GuardDuty Sample Log**
+1. Name the detection a unique name with your initials - Sample "AWS GuardDuty High Severity Finding - Brandon"
+2. Select Functions & Tests
+3. Scroll down and populate test with log if not already done
+
+**CloudTrail GuardDuty Log**
 ```
 {
 "accountId": "123456789012",
@@ -138,6 +123,13 @@ def severity(event):
 "updatedAt": "2020-02-14T18:12:22.316Z"
 }
 ```
+
+**Part 3 - Tune Detection with Severity Function
+1. Capture all guardduty detections as alerts in Panther, but tune out the lower end ones. 
+2. Modify the rule function to alert on events from severity 1 to 10
+3. To reduce noise of this detection, use the severity function to create dynamic categorization of alerts
+4. Use an IF statement to send severity 5 and below alerts to "INFO" level and 8 and above to "HIGH". For any other severity, return "MEDIUM"
+
 
 
 ## Lesson 3 - Enrich a Detection with GreyNoise
