@@ -79,7 +79,7 @@ This guide will provide you with a step-by-step of all the commands that will be
 2. Select the AWS GuardDuty High Severity Finding
 3. Select Clone & Edit on the Top Right | IF you're using a shared dev instance, please copy & paste detection to a new one. Do NOT clone & edit to avoid merge conflicts
 
-**Part 2 - Prepare Unit Test
+**Part 2 - Prepare Unit Test**
 
 1. Name the detection a unique name with your initials - Sample "AWS GuardDuty High Severity Finding - Brandon"
 2. Select Functions & Tests
@@ -128,7 +128,10 @@ This guide will provide you with a step-by-step of all the commands that will be
 }
 ```
 
-**Part 3 - Tune Detection with Severity Function
+
+
+
+**Part 3 - Tune Detection with Severity Function**
 1. Capture all guardduty detections as alerts in Panther, but tune out the lower end ones. 
 2. Modify the rule function to alert on events from severity 1 to 10
 3. To reduce noise of this detection, use the severity function to create dynamic categorization of alerts
