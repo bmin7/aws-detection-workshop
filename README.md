@@ -67,7 +67,11 @@ This guide will provide you with a step-by-step of all the commands that will be
 
 
 
-## Lesson 2 - Tune a Panther Managed Detection
+
+
+
+
+## Lesson 2 - Tune an Existing GuardDuty Detection created by Panther
 
 
 **Part 1 - Clone a Managed Detection**
@@ -129,96 +133,6 @@ This guide will provide you with a step-by-step of all the commands that will be
 2. Modify the rule function to alert on events from severity 1 to 10
 3. To reduce noise of this detection, use the severity function to create dynamic categorization of alerts
 4. Use an IF statement to send severity 5 and below alerts to "INFO" level and 8 and above to "HIGH". For any other severity, return "MEDIUM"
-
-
-
-## Lesson 3 - Enrich a Detection with GreyNoise
-Write a detection while using the GreyNoise helper to apply threat intelligence directly into a detection. For this example, we will use a brute force detection with the sample data from Okta below. 
-
-
-
-**Lesson 3 Steps**
-1. Create a new detection in the Panther Console Build > Detections > Create New
-2. Name the detection with your initials (Demo GreyNoise Detection Brandon)
-3. Select the AWS CloudTrail Brute Force Attempt and set a Medium Severity
-4. Select Functions & Tests to begin writing the detection
-5. Copy and Paste the Event Log below into a new unit test. You'll use this information to write your detection. 
-6. Import the deep_get function and the GetGreyNoiseObject function 
-```
-from panther_greynoise_helpers import GetGreyNoiseObject
-from panther_base_helpers import deep_get
-```
-7. In the rule function, begin by declaring a global variable "noise" and setting it to the GetGreyNoiseObject event pulled in from the helper function
-```
-global noise 
-noise = GetGreyNoiseObject(event)
-```
-8. Create an if statement that returns true when a user session starts and a failed login is detection (same statement as the one we used in the first exercise.
-9. Your rule function should look something like this: 
-```
-def rule(event):
-    global noise 
-    noise = GetGreyNoiseObject(event)
-    if (event.get("eventType") == "user.session.start" and deep_get(event, "outcome", "result") == "FAILURE"):
-        return True
-    return False
-```
-10. Add the severity function to return a "critical" alert when an IP is deemed "malicious" by GreyNoise and to return a "info" level alert when IP is deemed "benign". For all others, return "medium" severity. 
-```
-def severity(event):
-    if noise.classification("client.ipAddress") == "malicious":
-        return "CRITICAL"
-    if noise.classification("client.ipAddress") == "benign":
-        return "INFO"
-    return "MEDIUM"
-
-```
-11. Test your detection and modify as needed
-
-
-**Sample AWS.CloudTrail Event Data for Brute Force Detection**
-```
-{
-	"additionalEventData": {
-		"LoginTo": "https://console.aws.amazon.com/console/",
-		"MFAUsed": "No",
-		"MobileVersion": "No"
-	},
-	"awsRegion": "us-east-1",
-	"eventID": "1",
-	"eventName": "ConsoleLogin",
-	"eventSource": "signin.amazonaws.com",
-	"eventTime": "2019-01-01T00:00:00Z",
-	"eventType": "AwsConsoleSignIn",
-	"eventVersion": "1.05",
-	"p_event_time": "2021-06-04 09:59:53.650807",
-	"p_log_type": "AWS.CloudTrail",
-	"p_parse_time": "2021-06-04 10:02:33.650807",
-	"p_enrichment": {
-		"greynoise_noise_basic": {
-				"client.ipAddress": {
-					"actor": "EviLCorp",
-					"classification": "benign",
-					"ip": "1.2.3.4"
-			}
-		}	
-	},
-	"recipientAccountId": "123456789012",
-	"requestParameters": null,
-	"responseElements": {
-		"ConsoleLogin": "Failure"
-	},
-	"sourceIPAddress": "111.111.111.111",
-	"userAgent": "Mozilla",
-	"userIdentity": {
-		"accountId": "123456789012",
-		"arn": "arn:aws:iam::123456789012:user/tester",
-		"principalId": "1111",
-		"type": "IAMUser",
-		"userName": "tester"
-	}
-}
-```
 
 
 
