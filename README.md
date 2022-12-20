@@ -8,6 +8,8 @@ This guide will provide you with a step-by-step of all the commands that will be
 - [Panther Analysis Tool](https://docs.panther.com/panther-developer-workflows/panther-analysis-tool#overview)
 - [Lookup Tables](https://docs.panther.com/enrichment/lookup-tables)
 - [Unit Tests](https://docs.panther.com/writing-detections/testing#mocks)
+- [Panther Analysis Tool](https://docs.panther.com/panther-developer-workflows/panther-analysis-tool#overview)
+- [API Key](https://docs.panther.com/panther-developer-workflows/api#how-to-use-panthers-api)
 
 
 
@@ -136,6 +138,38 @@ This guide will provide you with a step-by-step of all the commands that will be
 2. Modify the rule function to alert on events from severity 1 to 10
 3. To reduce noise of this detection, use the severity function to create dynamic categorization of alerts
 4. Use an IF statement to send severity 5 and below alerts to "INFO" level and 8 and above to "HIGH". For any other severity, return "MEDIUM"
+
+## Lesson 3 - Upload Detections with Panther_Analysis_Tool
+
+**Part 1 - Create API Token**
+1. Within the Panther Console, select the gear icon on the top right > API Tokens
+2. Create a new token with all privileges 
+3. Save the value for later
+
+
+**Part 2 - Install PreReqs**
+1. Local machine will need Pip, Python3, and Git installed 
+
+**Part 3 - Install Panther Analysis Tool**
+1. Here is the link to the [PAT Repo](https://github.com/panther-labs/panther-analysis)
+2. Install PAT with Pip ```pip3 install panther_analysis_tool```
+3. Check Version ```panther_analysis_tool --version```
+4. Verify API Token and PAT Connection ```panther_analysis_tool check-connection --api-host DOMAIN --api-token TOKEN```
+
+**Part 4 - Clone Repo**
+1. Use Git to clone the Panther Analysis Repo ```git clone https://github.com/panther-labs/panther-analysis.git```
+2. Verify clone in files
+
+
+**Part 5 - Modify and Upload a Detection**
+1. Create a new directory in Panther Analysis and copy .py and .yml file
+2. Modify both files 
+3. Test the new Rule - ```panther_analysis_tool test --path <path to rule directory>```
+4. Upload the Rule - ```panther_analysis_tool upload --path <path to rule> --api-host DOMAIN --api-token TOKEN```
+
+
+
+
 
 
 
