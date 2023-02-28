@@ -1,4 +1,4 @@
-## MITRE ATT&CK for Detection-as-Code Workshop ##
+## MITRE ATT&CK for Detection-as-Code Workshop - WIP ##
 
 **Helpful Links**
 - [All Available Rule Functions](https://github.com/panther-labs/panther-analysis/blob/master/templates/example_rule.py)
